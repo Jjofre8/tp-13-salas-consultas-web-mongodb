@@ -1,0 +1,250 @@
+<section>
+    <p>GESTIÓN DE SALAS DE ESTUDIO</p>
+
+    <h2>Reservas registradas</h2>
+
+    <p>
+        Buscá, consultá, editá y administrá las reservas
+        de salas de estudio.
+    </p>
+
+    <div class="botones">
+        <a href="/reservas/nueva" class="boton">
+            Nueva reserva
+        </a>
+    </div>
+
+    <form action="/reservas" method="GET" class="formulario">
+
+        <h3>Buscar reservas</h3>
+
+        <label for="q">Estudiante</label>
+        <input type="search" id="q" name="q" maxlength="60" placeholder="Buscar por nombre del estudiante"
+            value="<%= criterios.q %>">
+
+        <label for="sala">Sala</label>
+        <input type="text" id="sala" name="sala" maxlength="80" list="salas-disponibles" placeholder="Todas las salas"
+            value="<%= criterios.sala %>">
+
+        <datalist id="salas-disponibles">
+            <% salasPermitidas.forEach((sala)=> { %>
+                <option value="<%= sala %>"></option>
+                <% }) %>
+        </datalist>
+
+        <label for="orden">Ordenar por</label>
+        <select id="orden" name="orden">
+
+            <option value="estudiante" <%=criterios.orden==="estudiante" ? "selected" : "" %>>
+                Estudiante
+            </option>
+
+            <option value="personas-asc" <%=criterios.orden==="personas-asc" ? "selected" : "" %>>
+                Personas: menor a mayor
+            </option>
+
+            <option value="personas-desc" <%=criterios.orden==="personas-desc" ? "selected" : "" %>>
+                Personas: mayor a menor
+            </option>
+
+        </select>
+
+        <label for="limite">Resultados por página</label>
+        <select id="limite" name="limite">
+            <% for (let cantidad=1; cantidad <=20; cantidad++) { %>
+
+                <option value="<%= cantidad %>" <%=limite===cantidad ? "selected" : "" %>>
+                    <%= cantidad %>
+                </option>
+
+                <% } %>
+        </select>
+
+        <div class="botones">
+            <button type="submit" class="boton">
+                Buscar
+            </button>
+
+            <a href="/reservas" class="boton boton-secundario">
+                Limpiar
+            </a>
+        </div>
+
+    </form>
+
+    <div class="resumen-consulta">
+        <p>
+            <strong>Total de coincidencias:</strong>
+            <%= total %>
+        </p>
+
+        <% if (total> 0 && !fueraDeRango) { %>
+            <p>
+                Mostrando <%= reservas.length %> de <%= total %> reservas.
+            </p>
+
+            <p>
+                Página <%= pagina %> de <%= paginas %>
+            </p>
+            <% } %>
+    </div>
+
+    <% if (total===0) { %>
+
+        <div class="alerta">
+            <h3>No hay coincidencias</h3>
+
+            <p>
+                No se encontraron reservas con los criterios ingresados.
+                Podés modificar la búsqueda o limpiar los filtros.
+            </p>
+
+            <div class="botones">
+                <a href="/reservas" class="boton boton-secundario">
+                    Limpiar búsqueda
+                </a>
+            </div>
+        </div>
+
+        <% } else if (fueraDeRango) { %>
+
+            <div class="alerta">
+                <h3>Página fuera de resultados</h3>
+
+                <p>
+                    La página solicitada no contiene resultados.
+                    Hay <%= paginas %> páginas disponibles para esta búsqueda.
+                </p>
+
+                <div class="botones">
+                    <a href="<%= enlaces.primera %>" class="boton">
+                        Ir a la primera página
+                    </a>
+
+                    <a href="/reservas" class="boton boton-secundario">
+                        Limpiar búsqueda
+                    </a>
+                </div>
+            </div>
+
+            <% } else { %>
+
+                <div class="reservas">
+
+                    <% reservas.forEach((reserva)=> { %>
+
+                        <article class="reserva-card">
+
+                            <h3>Reserva #<%= reserva.id %>
+                            </h3>
+
+                            <p>
+                                <strong>Estudiante:</strong>
+                                <%= reserva.estudiante %>
+                            </p>
+
+                            <p>
+                                <strong>Sala:</strong>
+                                <%= reserva.sala %>
+                            </p>
+
+                            <p>
+                                <strong>Fecha:</strong>
+                                <%= reserva.fecha %>
+                            </p>
+
+                            <p>
+                                <strong>Turno:</strong>
+                                <%= reserva.turno %>
+                            </p>
+
+                            <p>
+                                <strong>Personas:</strong>
+                                <%= reserva.personas %>
+                            </p>
+
+                            <p>
+                                <strong>Estado:</strong>
+
+                                <% if (reserva.estado==="confirmada" ) { %>
+
+                                    <span class="estado-reserva estado-confirmada">
+                                        Confirmada
+                                    </span>
+
+                                    <% } else if (reserva.estado==="pendiente" ) { %>
+
+                                        <span class="estado-reserva estado-pendiente">
+                                            Pendiente
+                                        </span>
+
+                                        <% } else { %>
+
+                                            <span class="estado-reserva estado-sin-definir">
+                                                Sin definir
+                                            </span>
+
+                                            <% } %>
+                            </p>
+
+                            <div class="botones">
+
+                                <a href="/reservas/<%= reserva.id %>" class="boton">
+                                    Ver detalle
+                                </a>
+
+                                <a href="/reservas/<%= reserva.id %>/editar" class="boton boton-secundario">
+                                    Editar reserva
+                                </a>
+
+                                <a href="/reservas/<%= reserva.id %>/estado" class="boton boton-secundario">
+                                    Cambiar estado
+                                </a>
+
+                                <a href="/reservas/<%= reserva.id %>/eliminar" class="boton boton-secundario">
+                                    Eliminar reserva
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                        <% }) %>
+
+                </div>
+
+                <% if (paginas> 1) { %>
+
+                    <nav class="paginacion" aria-label="Paginación de reservas">
+
+                        <div class="botones">
+
+                            <% if (enlaces.anterior) { %>
+
+                                <a href="<%= enlaces.anterior %>" class="boton boton-secundario">
+                                    Anterior
+                                </a>
+
+                                <% } %>
+
+                                    <span>
+                                        Página <%= pagina %> de <%= paginas %>
+                                    </span>
+
+                                    <% if (enlaces.siguiente) { %>
+
+                                        <a href="<%= enlaces.siguiente %>" class="boton">
+                                            Siguiente
+                                        </a>
+
+                                        <% } %>
+
+                        </div>
+
+                    </nav>
+
+                    <% } %>
+
+                        <% } %>
+
+</section>

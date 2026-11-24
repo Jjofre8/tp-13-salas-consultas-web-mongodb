@@ -1,0 +1,181 @@
+<section>
+    <p><%= seccion %></p>
+
+    <h2>Editar reserva de sala</h2>
+
+    <p>
+        Modificá los datos de la reserva de sala
+        de estudio y guardá los cambios.
+    </p>
+
+    <% if (errores && errores.length > 0) { %>
+        <div class="alerta" role="alert">
+            <h3>Hay errores en el formulario</h3>
+
+            <ul>
+                <% errores.forEach((error) => { %>
+                    <li><%= error %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <form
+        class="formulario"
+        action="/reservas/<%= id %>/editar"
+        method="POST"
+    >
+        <div class="formulario-grupo">
+            <label for="estudiante">
+                Nombre del estudiante
+            </label>
+
+            <input
+                type="text"
+                id="estudiante"
+                name="estudiante"
+                value="<%= valores.estudiante ?? '' %>"
+                required
+            >
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="email">
+                Correo electrónico
+            </label>
+
+            <input
+                type="text"
+                id="email"
+                name="email"
+                value="<%= valores.email ?? '' %>"
+                required
+            >
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="sala">
+                Sala de estudio
+            </label>
+
+            <select id="sala" name="sala" required>
+                <option value="">Seleccionar sala</option>
+
+                <% if (valores.sala && !salasPermitidas.includes(valores.sala)) { %>
+                    <option value="<%= valores.sala %>" selected>
+                        <%= valores.sala %> (no válida)
+                    </option>
+                <% } %>
+
+                <% salasPermitidas.forEach((sala) => { %>
+                    <option
+                        value="<%= sala %>"
+                        <%= valores.sala === sala ? "selected" : "" %>
+                    >
+                        <%= sala %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="fecha">
+                Fecha de la reserva
+            </label>
+
+            <input
+                type="text"
+                id="fecha"
+                name="fecha"
+                placeholder="AAAA-MM-DD"
+                value="<%= valores.fecha ?? '' %>"
+                required
+            >
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="turno">
+                Turno
+            </label>
+
+            <select id="turno" name="turno" required>
+                <option value="">Seleccionar turno</option>
+
+                <% if (valores.turno && !turnosPermitidos.includes(valores.turno)) { %>
+                    <option value="<%= valores.turno %>" selected>
+                        <%= valores.turno %> (no válido)
+                    </option>
+                <% } %>
+
+                <% turnosPermitidos.forEach((turno) => { %>
+                    <option
+                        value="<%= turno %>"
+                        <%= valores.turno === turno ? "selected" : "" %>
+                    >
+                        <%= turno %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="personas">
+                Cantidad de personas (1 a 6)
+            </label>
+
+            <input
+                type="text"
+                inputmode="numeric"
+                id="personas"
+                name="personas"
+                value="<%= valores.personas ?? '' %>"
+                required
+            >
+        </div>
+
+        <div class="formulario-grupo">
+            <label for="estado">
+                Estado de la reserva
+            </label>
+
+            <select id="estado" name="estado" required>
+                <option value="">Seleccionar estado</option>
+
+                <% if (valores.estado && !estadosPermitidos.includes(valores.estado)) { %>
+                    <option value="<%= valores.estado %>" selected>
+                        <%= valores.estado %> (no válido)
+                    </option>
+                <% } %>
+
+                <% estadosPermitidos.forEach((estado) => { %>
+                    <option
+                        value="<%= estado %>"
+                        <%= valores.estado === estado ? "selected" : "" %>
+                    >
+                        <%= estado === "pendiente" ? "Pendiente" : "Confirmada" %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <button type="submit" class="boton">
+            Guardar cambios
+        </button>
+    </form>
+
+    <div class="botones">
+        <a
+            href="/reservas/<%= id %>"
+            class="boton boton-secundario"
+        >
+            Cancelar
+        </a>
+
+        <a
+            href="/reservas"
+            class="boton boton-secundario"
+        >
+            Volver a reservas
+        </a>
+    </div>
+</section>

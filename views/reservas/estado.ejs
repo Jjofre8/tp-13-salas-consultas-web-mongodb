@@ -1,0 +1,66 @@
+<section>
+    <p>
+        <%= seccion %>
+    </p>
+
+    <h2>Cambiar estado de la reserva</h2>
+
+    <p>
+        Seleccioná el nuevo estado de la reserva.
+        Los demás datos permanecerán sin cambios.
+    </p>
+
+    <p>
+        <strong>Reserva:</strong>
+        <%= id %>
+    </p>
+
+    <% if (errores && errores.length> 0) { %>
+        <div class="alerta" role="alert">
+            <h3>Hay errores en el formulario</h3>
+
+            <ul>
+                <% errores.forEach((error)=> { %>
+                    <li>
+                        <%= error %>
+                    </li>
+                    <% }) %>
+            </ul>
+        </div>
+        <% } %>
+
+            <form class="formulario" action="/reservas/<%= id %>/estado" method="POST">
+                <div class="formulario-grupo">
+                    <label for="estado">
+                        Estado de la reserva
+                    </label>
+
+                    <select id="estado" name="estado" required>
+                        <option value="">Seleccionar estado</option>
+
+                        <% if (valores.estado && !estadosPermitidos.includes(valores.estado)) { %>
+                            <option value="<%= valores.estado %>" selected>
+                                <%= valores.estado %> (no válido)
+                            </option>
+                            <% } %>
+
+                                <% estadosPermitidos.forEach((estado)=> { %>
+                                    <option value="<%= estado %>" <%=valores.estado===estado ? "selected" : "" %>
+                                        >
+                                        <%= estado==="pendiente" ? "Pendiente" : "Confirmada" %>
+                                    </option>
+                                    <% }) %>
+                    </select>
+                </div>
+
+                <button type="submit" class="boton">
+                    Guardar estado
+                </button>
+            </form>
+
+            <div class="botones">
+                <a href="/reservas/<%= id %>" class="boton boton-secundario">
+                    Cancelar
+                </a>
+            </div>
+</section>

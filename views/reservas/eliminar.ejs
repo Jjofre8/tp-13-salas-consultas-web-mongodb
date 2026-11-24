@@ -1,0 +1,71 @@
+<section>
+    <p>RESERVAS DE SALAS DE ESTUDIO</p>
+
+    <h2>Eliminar reserva</h2>
+
+    <div class="alerta">
+        <h3>Confirmar eliminación</h3>
+
+        <p>
+            La eliminación de esta reserva es permanente
+            y no se puede deshacer.
+        </p>
+    </div>
+
+    <% if (errores && errores.length> 0) { %>
+        <div class="alerta" role="alert">
+            <h3>No se pudo eliminar la reserva</h3>
+
+            <ul>
+                <% errores.forEach((error)=> { %>
+                    <li>
+                        <%= error %>
+                    </li>
+                    <% }) %>
+            </ul>
+        </div>
+        <% } %>
+
+            <article class="reserva-card">
+                <h3>Reserva #<%= reserva.id %>
+                </h3>
+
+                <p>
+                    <strong>Estudiante:</strong>
+                    <%= reserva.estudiante %>
+                </p>
+
+                <p>
+                    <strong>Sala:</strong>
+                    <%= reserva.sala %>
+                </p>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    <%= reserva.fecha %>
+                </p>
+
+                <p>
+                    <strong>Turno:</strong>
+                    <%= reserva.turno %>
+                </p>
+            </article>
+
+            <form class="formulario" action="/reservas/<%= id %>/eliminar" method="POST">
+                <input type="hidden" name="confirmar" value="si">
+
+                <button type="submit" class="boton">
+                    Confirmar eliminación
+                </button>
+            </form>
+
+            <div class="botones">
+                <a href="/reservas/<%= id %>" class="boton boton-secundario">
+                    Cancelar
+                </a>
+
+                <a href="/reservas" class="boton boton-secundario">
+                    Volver a reservas
+                </a>
+            </div>
+</section>
